@@ -2,8 +2,9 @@ import styled from "styled-components";
 import { mobile } from "../responsive";
 import { useState } from "react";
 
+import { BASE_URL } from "../requestMethods";
 
-
+import { useLocation } from "react-router-dom";
 
 const Container = styled.div`
   width: 100vw;
@@ -61,6 +62,8 @@ const Button = styled.button`
 
 const Register = () => {
  
+  const location = useLocation();
+
   const [user, setUser] = useState({
     name: '',
     lastname:'',
@@ -82,7 +85,7 @@ const Register = () => {
         window.alert("Password and Confirm password must be same !!!");
     }else{
 
-      const response = await fetch('http://localhost:5000/api/auth/register', {
+      const response = await fetch(BASE_URL+'auth/register', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
@@ -99,7 +102,7 @@ const Register = () => {
         email:'',
         password: '',
         cpassword:''})
-        window.location.replace("http://localhost:3000/login")
+        window.location.replace( location.search = "login")
       }
        
   }

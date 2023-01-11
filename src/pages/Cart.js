@@ -11,6 +11,7 @@ import {userRequest} from '../requestMethods'
 import { Link } from "react-router-dom";
 import {clearCart} from '../redux/cartRedux';
 import { useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
 
 
 const KEY =process.env.REACT_APP_STRIPE;
@@ -165,6 +166,8 @@ const Button = styled.button`
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
   const [stripeToken, setStripeToken] = useState(null);
+  const location = useLocation();
+
   
 
   const [product, setProduct] = useState({});
@@ -180,8 +183,8 @@ const Cart = () => {
 
   const onToken = (token) => {
     setStripeToken(token);
-    // handleClear()
-    // window.location.replace("http://localhost:3000");
+    handleClear()
+    window.location.replace(location.search = '/');
   };
 
   useEffect(() => {
@@ -191,7 +194,7 @@ const Cart = () => {
           tokenId: stripeToken.id,
           amount: cart.price,
         });
-        window.location.replace("http://localhost:3000/success", {
+        window.location.replace(location.search ="success", {
           stripeData: res.data,
           products: cart, });
       } catch {}
@@ -209,6 +212,9 @@ const Cart = () => {
       setQuantity(quantity+1)
     }
   }
+
+
+
   return (
     <Container>
       <Navbar />

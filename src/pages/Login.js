@@ -1,7 +1,9 @@
 import styled from "styled-components";
 import { mobile } from "../responsive";
 import { useState } from "react";
+import { BASE_URL } from "../requestMethods";
 
+import { useLocation } from "react-router-dom";
 
 const Container = styled.div`
   width: 100vw;
@@ -67,6 +69,8 @@ const Login = () => {
     password: ''
   })
 
+  const location = useLocation();
+
   const handleInput=(e)=>{
     e.preventDefault();
     setFormData({...formData, [e.target.name]: e.target.value})
@@ -76,7 +80,7 @@ const Login = () => {
   const handleSubmit= async (e)=>{
     console.log(formData)
     e.preventDefault();
-    const response = await fetch('http://localhost:5000/api/auth/login', {
+    const response = await fetch(`${BASE_URL}auth/login`, {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -86,10 +90,11 @@ const Login = () => {
 
     });
     const data = await response.json();
+    console.log(data)
     if(data.accessToken)
     {
-      // window.localStorage.setItem({token:data.accessToken});
-      window.location.replace("http://localhost:3000/");
+      window.localStorage.setItem('accessToken',data.accessToken);
+      window.location.replace(location.search = '/');
     }
   }
 
