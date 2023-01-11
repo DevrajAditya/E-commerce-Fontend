@@ -152,6 +152,7 @@ const Product = () => {
   const handleClick = ()=>{
     dispatch(
       addProduct({...product, quantity, color, size}));
+      window.location.replace("http://localhost:3000/cart");
   }
   return (
     <Container>

@@ -1,5 +1,8 @@
 import styled from "styled-components";
 import { mobile } from "../responsive";
+import { useState } from "react";
+
+
 
 
 const Container = styled.div`
@@ -57,22 +60,65 @@ const Button = styled.button`
 `;
 
 const Register = () => {
+ 
+  const [user, setUser] = useState({
+    name: '',
+    lastname:'',
+    username:'',
+    email:'',
+    password: '',
+    cpassword:''
+  })
+
+  const handleInput=(e)=>{
+    e.preventDefault();
+    setUser({...user, [e.target.name]: e.target.value})
+  }
+
+  console.log(user)
+  const handleSubmit= async (e)=>{
+    e.preventDefault();
+    if(user.password !== user.cpassword){
+        window.alert("Password and Confirm password must be same !!!");
+    }else{
+
+      const response = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(user)
+        
+      });
+      window.alert("User Register Sucessfully");
+      setUser({...user,
+        name: '',
+        lastname:'',
+        username:'',
+        email:'',
+        password: '',
+        cpassword:''})
+        window.location.replace("http://localhost:3000/login")
+      }
+       
+  }
   return (
     <Container>
       <Wrapper>
         <Title>CREATE AN ACCOUNT</Title>
         <Form>
-          <Input placeholder="name" />
-          <Input placeholder="last name" />
-          <Input placeholder="username" />
-          <Input placeholder="email" />
-          <Input placeholder="password" />
-          <Input placeholder="confirm password" />
+          <Input placeholder="name"  name='name' value={user.name} onChange={(e)=> handleInput(e)} />
+          <Input placeholder="last name" name='lastname' value={user.lastname} onChange={(e)=> handleInput(e)} />
+          <Input placeholder="username"  name='username' value={user.username} onChange={(e)=> handleInput(e)} />
+          <Input placeholder="email"  name='email' value={user.email} onChange={(e)=> handleInput(e)} />
+          <Input type={"password"} placeholder="password"  name='password' value={user.password} onChange={(e)=> handleInput(e)} />
+          <Input type={"password"} placeholder="confirm password"  name='cpassword' value={user.cpassword} onChange={(e)=> handleInput(e)}/>
           <Agreement>
             By creating an account, I consent to the processing of my personal
             data in accordance with the <b>PRIVACY POLICY</b>
           </Agreement>
-          <Button>CREATE</Button>
+          <Button onClick={handleSubmit}>CREATE</Button>
         </Form>
       </Wrapper>
     </Container>

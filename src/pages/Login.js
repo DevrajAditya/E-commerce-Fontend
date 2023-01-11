@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { mobile } from "../responsive";
+import { useState } from "react";
 
 
 const Container = styled.div`
@@ -60,14 +61,46 @@ const Link = styled.a`
 `;
 
 const Login = () => {
+
+  const [formData, setFormData] = useState({
+    username: '',
+    password: ''
+  })
+
+  const handleInput=(e)=>{
+    e.preventDefault();
+    setFormData({...formData, [e.target.name]: e.target.value})
+  }
+
+  console.log(formData)
+  const handleSubmit= async (e)=>{
+    console.log(formData)
+    e.preventDefault();
+    const response = await fetch('http://localhost:5000/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+
+    });
+    const data = await response.json();
+    if(data.accessToken)
+    {
+      // window.localStorage.setItem({token:data.accessToken});
+      window.location.replace("http://localhost:3000/");
+    }
+  }
+
   return (
     <Container>
       <Wrapper>
         <Title>SIGN IN</Title>
         <Form>
-          <Input placeholder="username" />
-          <Input placeholder="password" />
-          <Button>LOGIN</Button>
+        <Input placeholder="username" name='username' value={formData.username} onChange={(e)=> handleInput(e)} />
+        <Input type={"password"} placeholder="password" name='password' value={formData.password} onChange={(e)=> handleInput(e)} />
+          <Button onClick={handleSubmit}>LOGIN</Button>
           <Link>DO NOT YOU REMEMBER THE PASSWORD?</Link>
           <Link>CREATE A NEW ACCOUNT</Link>
         </Form>
@@ -77,3 +110,6 @@ const Login = () => {
 };
 
 export default Login;
+
+
+

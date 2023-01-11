@@ -4,7 +4,16 @@ import styled from "styled-components";
 import Announcement from "../components/Announcement";
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
+import StripeCheckout from 'react-stripe-checkout';
 import { mobile } from "../responsive";
+import { useEffect, useState } from "react";
+import {userRequest} from '../requestMethods'
+import { Link } from "react-router-dom";
+import {clearCart} from '../redux/cartRedux';
+import { useDispatch } from "react-redux";
+
+
+const KEY =process.env.REACT_APP_STRIPE;
 
 const Container = styled.div``;
 
@@ -155,6 +164,51 @@ const Button = styled.button`
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
+  const [stripeToken, setStripeToken] = useState(null);
+  
+
+  const [product, setProduct] = useState({});
+
+
+  const dispatch = useDispatch();
+
+  const handleClear = ()=>{
+    dispatch(
+      clearCart({...product, quantity: 0, color:[], size: []}));
+  }
+
+
+  const onToken = (token) => {
+    setStripeToken(token);
+    // handleClear()
+    // window.location.replace("http://localhost:3000");
+  };
+
+  useEffect(() => {
+    const makeRequest = async () => {
+      try {
+        const res = await userRequest.post("/checkout/payment", {
+          tokenId: stripeToken.id,
+          amount: cart.price,
+        });
+        window.location.replace("http://localhost:3000/success", {
+          stripeData: res.data,
+          products: cart, });
+      } catch {}
+    };
+    stripeToken && makeRequest();
+  }, [stripeToken, cart.total]);
+
+  const [quantity, setQuantity] = useState(1);
+
+  const handleQuantity = (type) =>{
+    if(type === "dec"){
+     quantity > 1 && setQuantity(quantity-1)
+    }
+    else{
+      setQuantity(quantity+1)
+    }
+  }
   return (
     <Container>
       <Navbar />
@@ -162,10 +216,11 @@ const Cart = () => {
       <Wrapper>
         <Title>YOUR BAG</Title>
         <Top>
-          <TopButton>CONTINUE SHOPPING</TopButton>
+
+        <TopButton ><Link style={{textDecoration: 'none'}} to ="/">CONTINUE SHOPPING</Link></TopButton>
           <TopTexts>
-            <TopText>Shopping Bag(2)</TopText>
-            <TopText>Your Wishlist (0)</TopText>
+            <TopText>Shopping Bag(1)</TopText>
+            <TopText>Your Wishlist {cart.quantity}</TopText>
           </TopTexts>
           <TopButton type="filled">CHECKOUT NOW</TopButton>
         </Top>
@@ -190,9 +245,9 @@ const Cart = () => {
                 </ProductDetail>
                 <PriceDetail>
                   <ProductAmountContainer>
-                    <Add />
+                    <Add onClick={()=>handleQuantity("inc")} />
                     <ProductAmount>{product.quantity}</ProductAmount>
-                    <Remove />
+                    <Remove onClick={()=>handleQuantity("dec")}/>
                   </ProductAmountContainer>
                   <ProductPrice>₹ {product.price * product.quantity}</ProductPrice>
                 </PriceDetail>
@@ -218,11 +273,23 @@ const Cart = () => {
               <SummaryItemText>Total</SummaryItemText>
               <SummaryItemPrice>₹ {cart.total}</SummaryItemPrice>
             </SummaryItem>
-            <Button>CHECKOUT NOW</Button>
+            <StripeCheckout
+              name="Aditya Shop"
+              image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-nDvHnMiULPg-WQjs_zlPvlH1HduqQHAh3w&usqp=CAU"
+              billingAddress
+              shippingAddress
+              description={`Your total is ₹${cart.total}`}
+              amount={cart.total * 100}
+              token={onToken}
+              stripeKey={KEY}
+            >
+              <Button>CHECKOUT NOW</Button>
+            </StripeCheckout>
           </Summary>
         </Bottom>
       </Wrapper>
       <Footer />
+              
     </Container>
   );
 };

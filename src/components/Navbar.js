@@ -1,6 +1,6 @@
 import { Badge } from "@material-ui/core";
 import { Search, ShoppingCartOutlined } from "@material-ui/icons";
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import {mobile} from '../responsive';
 import {useSelector} from 'react-redux';
@@ -68,6 +68,9 @@ const MenuItem = styled.div`
 `;
 
 const Navbar = () => {
+
+  const [isLoggedIn , setIsLoggedIn] = useState(false)
+
   const quantity = useSelector(state=>state.cart.quantity)
   return (
     <Container>
@@ -84,8 +87,8 @@ const Navbar = () => {
           <Logo>ADITYA</Logo>
         </Center>
         <Right>
-          <MenuItem>REGISTER</MenuItem>
-          <MenuItem>SIGN IN</MenuItem>
+          <MenuItem><Link style={{textDecoration: 'none'}} to ="/register">REGISTER</Link></MenuItem>
+          <MenuItem><Link style={{textDecoration: 'none'}} to ="/login">{isLoggedIn ? 'LOGOUT':'SIGN IN'}</Link></MenuItem>
           <Link to="/cart">
           <MenuItem>
             <Badge badgeContent={quantity} color="primary">
