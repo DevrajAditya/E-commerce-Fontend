@@ -1,10 +1,12 @@
 import { Badge } from "@material-ui/core";
 import { Search, ShoppingCartOutlined } from "@material-ui/icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import {mobile} from '../responsive';
 import {useSelector} from 'react-redux';
 import {Link} from 'react-router-dom';
+import { initialState , loginSuccess} from "../redux/userRedux";
+
 
 const Container = styled.div`
   height: 60px;
@@ -69,9 +71,14 @@ const MenuItem = styled.div`
 
 const Navbar = () => {
 
-  const [isLoggedIn , setIsLoggedIn] = useState(false)
-
+  const [isLoggedIn , setIsLoggedIn] = useState('')
+  window.alert("llllllllllllllllll", initialState)
   const quantity = useSelector(state=>state.cart.quantity)
+
+  useEffect(()=>{
+    initialState && setIsLoggedIn(initialState)
+  })
+
   return (
     <Container>
       <Wrapper>

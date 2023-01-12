@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { mobile } from "../responsive";
 import { useState } from "react";
 import { BASE_URL } from "../requestMethods";
+import { loginSuccess } from "../redux/userRedux";
+import { useDispatch } from "react-redux";
 
 import { useLocation } from "react-router-dom";
 
@@ -55,7 +57,7 @@ const Button = styled.button`
   margin-bottom: 10px;
 `;
 
-const Link = styled.a`
+const Links = styled.a`
   margin: 5px 0px;
   font-size: 12px;
   text-decoration: underline;
@@ -64,6 +66,7 @@ const Link = styled.a`
 
 const Login = () => {
 
+  const dispatch = useDispatch()
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -76,9 +79,7 @@ const Login = () => {
     setFormData({...formData, [e.target.name]: e.target.value})
   }
 
-  console.log(formData)
   const handleSubmit= async (e)=>{
-    console.log(formData)
     e.preventDefault();
     const response = await fetch(`${BASE_URL}auth/login`, {
       method: 'POST',
@@ -90,14 +91,22 @@ const Login = () => {
 
     });
     const data = await response.json();
-    console.log(data)
-    if(data.accessToken)
-    {
-      window.localStorage.setItem('accessToken',data.accessToken);
-      window.location.replace(location.search = '/');
+    console.log("DAAATAAAATAA", data)
+    if(data.error){
+      window.alert("wrong credentails !")
+    }else {
+      if(data.accessToken)
+      {
+        window.localStorage.setItem('accessToken',data.accessToken);
+        await dispatch(loginSuccess(data.username))
+        // window.alert(data.username)
+        window.location.replace(location.search = '/');
+      }
     }
   }
-
+const handleChange =()=>{
+  window.location.replace(location.search = '/register');
+}
   return (
     <Container>
       <Wrapper>
@@ -106,8 +115,8 @@ const Login = () => {
         <Input placeholder="username" name='username' value={formData.username} onChange={(e)=> handleInput(e)} />
         <Input type={"password"} placeholder="password" name='password' value={formData.password} onChange={(e)=> handleInput(e)} />
           <Button onClick={handleSubmit}>LOGIN</Button>
-          <Link>DO NOT YOU REMEMBER THE PASSWORD?</Link>
-          <Link>CREATE A NEW ACCOUNT</Link>
+          <Links>DO NOT YOU REMEMBER THE PASSWORD?</Links>
+          <Links onClick={handleChange}>CREATE A NEW ACCOUNT</Links>
         </Form>
       </Wrapper>
     </Container>

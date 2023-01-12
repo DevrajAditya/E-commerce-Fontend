@@ -1,8 +1,7 @@
 import styled from "styled-components";
 import { mobile } from "../responsive";
 import { useState } from "react";
-
-import { BASE_URL } from "../requestMethods";
+import {BASE_URL} from '../requestMethods';
 
 import { useLocation } from "react-router-dom";
 
@@ -59,8 +58,18 @@ const Button = styled.button`
   color: white;
   cursor: pointer;
 `;
+const Loginbtn = styled.button`
+  width: 40%;
+  border: none;
+  padding: 15px 20px;
+  background-color: teal;
+  color: white;
+  cursor: pointer;
+  margin-left: 10px;
+`;
 
 const Register = () => {
+
  
   const location = useLocation();
 
@@ -78,9 +87,10 @@ const Register = () => {
     setUser({...user, [e.target.name]: e.target.value})
   }
 
-  console.log(user)
   const handleSubmit= async (e)=>{
     e.preventDefault();
+
+        
     if(user.password !== user.cpassword){
         window.alert("Password and Confirm password must be same !!!");
     }else{
@@ -94,18 +104,28 @@ const Register = () => {
         body: JSON.stringify(user)
         
       });
-      window.alert("User Register Sucessfully");
-      setUser({...user,
-        name: '',
-        lastname:'',
-        username:'',
-        email:'',
-        password: '',
-        cpassword:''})
-        window.location.replace( location.search = "login")
+      const res = await response.json();
+      if (res.err) {
+      window.alert("User is already registered");
+      } else {
+        window.alert("User Register Sucessfully");
+        setUser({...user,
+          name: '',
+          lastname:'',
+          username:'',
+          email:'',
+          password: '',
+          cpassword:''})
+          window.location.replace( location.search = "/login")
+        }
       }
        
   }
+  const handleLogin = (e)=>{
+    e.preventDefault();
+    window.location.replace( location.search = "/login")
+  }
+
   return (
     <Container>
       <Wrapper>
@@ -122,6 +142,7 @@ const Register = () => {
             data in accordance with the <b>PRIVACY POLICY</b>
           </Agreement>
           <Button onClick={handleSubmit}>CREATE</Button>
+          <Loginbtn onClick={handleLogin}>LOGIN</Loginbtn>
         </Form>
       </Wrapper>
     </Container>

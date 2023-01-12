@@ -169,6 +169,7 @@ const Cart = () => {
   const location = useLocation();
 
   
+  
 
   const [product, setProduct] = useState({});
 
@@ -194,7 +195,7 @@ const Cart = () => {
           tokenId: stripeToken.id,
           amount: cart.price,
         });
-        window.location.replace(location.search ="success", {
+        window.location.replace(location.search ="/success", {
           stripeData: res.data,
           products: cart, });
       } catch {}

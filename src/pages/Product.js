@@ -152,7 +152,7 @@ const Product = () => {
   const handleClick = ()=>{
     dispatch(
       addProduct({...product, quantity, color, size}));
-      window.location.replace(location.search = 'cart');
+      window.location.replace(location.search = '/cart');
   }
   return (
     <Container>

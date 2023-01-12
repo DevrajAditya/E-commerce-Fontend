@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { useLocation } from "react-router-dom";
 
 const userSlice = createSlice({
   name: "user",
   initialState: {
-    currentUser: null,
+    currentUser: '',
     isFetching: false,
     error: false,
   },
@@ -12,8 +13,9 @@ const userSlice = createSlice({
       state.isFetching = true;
     },
     loginSuccess: (state, action) => {
-      state.isFetching = false;
+      state.isFetching = true;
       state.currentUser = action.payload;
+      console.log('current suer', state.currentUser)
     },
     loginFailure: (state) => {
       state.isFetching = false;
@@ -22,5 +24,5 @@ const userSlice = createSlice({
   },
 });
 
-export const { loginStart, loginSuccess, loginFailure } = userSlice.actions;
+export const { loginStart, loginSuccess, loginFailure, initialState } = userSlice.actions;
 export default userSlice.reducer;
