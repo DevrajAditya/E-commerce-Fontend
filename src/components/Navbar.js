@@ -3,7 +3,7 @@ import { Search, ShoppingCartOutlined } from "@material-ui/icons";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import {mobile} from '../responsive';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {Link} from 'react-router-dom';
 import { initialState , loginSuccess} from "../redux/userRedux";
 
@@ -71,16 +71,18 @@ const MenuItem = styled.div`
 
 const Navbar = () => {
 
-  const user = useSelector((state) => state.user.currentUser);
-  const [isLoggedIn , setIsLoggedIn] = useState('')
-  window.alert("Yor are Login", initialState)
+   const user = useSelector((state) => state.user.currentUser)
+  
   const quantity = useSelector(state=>state.cart.quantity)
 
-  useEffect(()=>{
-    initialState && setIsLoggedIn(initialState)
-  })
+  const dispatch = useDispatch();
+  const handleLogout = async ()=>{
+    localStorage.setItem('accessToken', null);
+      await dispatch(loginSuccess(null));
+      window.alert('User logged out successfully')
+    }
 
-  return (
+    return (
     <Container>
       <Wrapper>
         <Left>
@@ -96,7 +98,11 @@ const Navbar = () => {
         </Center>
         <Right>
           <MenuItem><Link style={{textDecoration: 'none'}} to ="/register">REGISTER</Link></MenuItem>
-          <MenuItem><Link style={{textDecoration: 'none'}} to ="/login">{user ? 'LOGOUT':'SIGN IN'}</Link></MenuItem>
+          {!user ? 
+            <MenuItem><Link  to ="/login" style={{textDecoration: 'none'}}>LOGIN</Link></MenuItem>
+          :
+            <MenuItem><Link onClick={handleLogout}  style={{textDecoration: 'none'}} >LOGOUT</Link></MenuItem>
+          }
           <Link to="/cart">
           <MenuItem>
             <Badge badgeContent={quantity} color="primary">

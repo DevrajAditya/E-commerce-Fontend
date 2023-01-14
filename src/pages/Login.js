@@ -99,7 +99,7 @@ const Login = () => {
       {
         window.localStorage.setItem('accessToken',data.accessToken);
         await dispatch(loginSuccess(data.username))
-        // window.alert(data.username)
+        window.alert(`${data.username} Logged in successfully`)
         window.location.replace(location.search = '/');
       }
     }

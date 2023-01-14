@@ -15,7 +15,7 @@ import Success from "./pages/Success";
 
 
 const App = ()=>{
-  const user = useSelector((state) => state.user.currentUser);
+
   return(
     // <Success />
         <Router>
@@ -23,7 +23,7 @@ const App = ()=>{
             <Route path='/' element={<Home/>} />
             <Route path='/products/:category' element={<ProductList/>} />
             <Route path='/product/:id' element={<Product/>} />
-            <Route path='/login' element={!user ? <Login /> : <Navigate replace to={"/"} />} />
+            <Route path='/login' element={<Login /> } />
             <Route path='/register' element={<Register/>} />
             <Route path='/cart' element={<Cart/>} />
             <Route path='/success' element={<Success/>} />
