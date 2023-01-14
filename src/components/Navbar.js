@@ -71,8 +71,9 @@ const MenuItem = styled.div`
 
 const Navbar = () => {
 
+  const user = useSelector((state) => state.user.currentUser);
   const [isLoggedIn , setIsLoggedIn] = useState('')
-  window.alert("llllllllllllllllll", initialState)
+  window.alert("Yor are Login", initialState)
   const quantity = useSelector(state=>state.cart.quantity)
 
   useEffect(()=>{
@@ -95,7 +96,7 @@ const Navbar = () => {
         </Center>
         <Right>
           <MenuItem><Link style={{textDecoration: 'none'}} to ="/register">REGISTER</Link></MenuItem>
-          <MenuItem><Link style={{textDecoration: 'none'}} to ="/login">{isLoggedIn ? 'LOGOUT':'SIGN IN'}</Link></MenuItem>
+          <MenuItem><Link style={{textDecoration: 'none'}} to ="/login">{user ? 'LOGOUT':'SIGN IN'}</Link></MenuItem>
           <Link to="/cart">
           <MenuItem>
             <Badge badgeContent={quantity} color="primary">
